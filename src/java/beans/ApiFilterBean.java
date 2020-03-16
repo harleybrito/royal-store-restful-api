@@ -2,7 +2,7 @@ package beans;
 
 import javax.ws.rs.QueryParam;
 
-public class ClienteFilterBean {
+public class ApiFilterBean {
     private @QueryParam("nome") String nome;
     private @QueryParam("comeco") int comeco;
     private @QueryParam("tamanho") int tamanho;

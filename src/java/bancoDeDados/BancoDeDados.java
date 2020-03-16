@@ -27,7 +27,6 @@ public class BancoDeDados {
         Map<Long, Cliente> clientes = new HashMap<>();
         try{
             Connection databaseConnection = ConnectionDB.Connect();
-            String query = "select * from cliente";
             PreparedStatement statement = databaseConnection.prepareStatement("select * from cliente");
             ResultSet data = statement.executeQuery();
 
@@ -53,6 +52,25 @@ public class BancoDeDados {
         return clientes;
     }
     
+    public static Map<Long, Funcionario> getFuncionarios(){
+        Map<Long, Funcionario> funcionarios = new HashMap<>();
+        try{
+            Connection databaseConnection = ConnectionDB.Connect();
+            PreparedStatement statement = databaseConnection.prepareStatement("select * from funcionario");
+            ResultSet data = statement.executeQuery();
+
+            while(data.next()){
+                Funcionario funcionario = new Funcionario(data.getInt(1), data.getString(2), data.getString(3), data.getString(4), data.getString(5), data.getString(6), data.getString(7), data.getString(8), data.getString(9), data.getString(10), data.getString(11), data.getString(12), data.getFloat(13));
+                funcionarios.put(funcionario.getId(), funcionario);
+            }
+            databaseConnection.close();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        
+        return funcionarios;
+    }
+    
     public static void saveCliente(Cliente cliente){
         try{
             Connection databaseConnection = ConnectionDB.Connect();
@@ -73,10 +91,33 @@ public class BancoDeDados {
         }
     }
     
+    public static void saveFuncionario(Funcionario funcionario){
+        try{
+            Connection databaseConnection = ConnectionDB.Connect();
+            PreparedStatement statement = databaseConnection.prepareStatement("insert into funcionario (nome, usuario, senha, cpf, rg, telefone, endereco, complemento, cidade, estado, cep, salario) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            statement.setString(1, funcionario.getNome());
+            statement.setString(2, funcionario.getUsuario());
+            statement.setString(3, funcionario.getSenha());
+            statement.setString(4, funcionario.getCpf());
+            statement.setString(5, funcionario.getRg());
+            statement.setString(6, funcionario.getCelular());
+            statement.setString(7, funcionario.getEndereco());
+            statement.setString(8, funcionario.getComplemento());
+            statement.setString(9, funcionario.getCidade());
+            statement.setString(10, funcionario.getEstado());
+            statement.setString(11, funcionario.getCep());
+            statement.setFloat(12, funcionario.getSalario());
+            statement.executeUpdate();
+            databaseConnection.close();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+    
     public static void updateCliente(Cliente cliente){
         try{
             Connection databaseConnection = ConnectionDB.Connect();
-            PreparedStatement statement = databaseConnection.prepareStatement("UPDATE cliente SET nome = ?, cpf = ?, rg = ?, endereco = ?, complemento = ?, cidade = ?, estado = ?, cep = ?, telefone = ?");
+            PreparedStatement statement = databaseConnection.prepareStatement("UPDATE cliente SET nome = ?, cpf = ?, rg = ?, endereco = ?, complemento = ?, cidade = ?, estado = ?, cep = ?, telefone = ? where idCliente = ?");
             statement.setString(1, cliente.getNome());
             statement.setString(2, cliente.getCpf());
             statement.setString(3, cliente.getRg());
@@ -86,6 +127,31 @@ public class BancoDeDados {
             statement.setString(7, cliente.getEstado());
             statement.setString(8, cliente.getCep());
             statement.setString(9, cliente.getCelular());
+            statement.setLong(10, cliente.getId());
+            statement.executeUpdate();
+            databaseConnection.close();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+    
+    public static void updateFuncionario(Funcionario funcionario){
+        try{
+            Connection databaseConnection = ConnectionDB.Connect();
+            PreparedStatement statement = databaseConnection.prepareStatement("UPDATE funcionario SET nome = ?, usuario = ?, senha = ?, cpf = ?, rg = ?, telefone = ?,endereco = ?, complemento = ?, cidade = ?, estado = ?, cep = ?, salario = ? where idFuncionario = ?");
+            statement.setString(1, funcionario.getNome());
+            statement.setString(2, funcionario.getUsuario());
+            statement.setString(3, funcionario.getSenha());
+            statement.setString(4, funcionario.getCpf());
+            statement.setString(5, funcionario.getRg());
+            statement.setString(6, funcionario.getCelular());
+            statement.setString(7, funcionario.getEndereco());
+            statement.setString(8, funcionario.getComplemento());
+            statement.setString(9, funcionario.getCidade());
+            statement.setString(10, funcionario.getEstado());
+            statement.setString(11, funcionario.getCep());
+            statement.setFloat(12, funcionario.getSalario());
+            statement.setLong(13, funcionario.getId());
             statement.executeUpdate();
             databaseConnection.close();
         }catch(Exception e){
@@ -104,13 +170,21 @@ public class BancoDeDados {
             e.printStackTrace();
         }
     }
+    
+    public static void removeFuncionario(long id){
+        try{
+            Connection databaseConnection = ConnectionDB.Connect();
+            PreparedStatement statement = databaseConnection.prepareStatement("DELETE FROM funcionario WHERE idFuncionario = ?");
+            statement.setLong(1, id);
+            statement.executeUpdate();
+            databaseConnection.close();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
 
     public static Map<Long, Fornecedor> getFornecedores() {
         return fornecedores;
-    }
-
-    public static Map<Long, Funcionario> getFuncionarios() {
-        return funcionarios;
     }
 
     public static Map<Long, PlanoDeContasCapa> getPlanoDeContasCapa() {

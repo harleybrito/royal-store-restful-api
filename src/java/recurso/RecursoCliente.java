@@ -1,12 +1,11 @@
 package recurso;
 
-import beans.ClienteFilterBean;
+import beans.ApiFilterBean;
 import java.net.URI;
 import java.util.List;
 import javax.ws.rs.BeanParam;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
-import javax.ws.rs.Encoded;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -28,7 +27,7 @@ public class RecursoCliente {
     ServicoCliente servicoCliente = new ServicoCliente();
     
     @GET
-    public List<Cliente> getClientes(@BeanParam ClienteFilterBean filterBean){
+    public List<Cliente> getClientes(@BeanParam ApiFilterBean filterBean){
         
         if(filterBean.getNome() != null){
             String clienteNome = filterBean.getNome();
