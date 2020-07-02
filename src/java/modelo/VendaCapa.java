@@ -13,15 +13,15 @@ public class VendaCapa {
     private long idFormaDePagamento;
     private long idCliente;
     private float valorTotal;
-    private char status;
-    private char preVenda;
+    private String status;
+    private String preVenda;
     private String comanda;
     private long idFuncionario;
     private Map<Long, VendaCapa> vendasCapa = new HashMap<>();
 
     public VendaCapa() {    }
 
-    public VendaCapa(long id, Date data, long idFormaDePagamento, long idCliente, float valorTotal, char status, char preVenda, String comanda, long idFuncionario) {
+    public VendaCapa(long id, Date data, long idFormaDePagamento, long idCliente, float valorTotal, String status, String preVenda, String comanda, long idFuncionario) {
         this.id = id;
         this.data = data;
         this.idFormaDePagamento = idFormaDePagamento;
@@ -73,19 +73,19 @@ public class VendaCapa {
         this.valorTotal = valorTotal;
     }
 
-    public char getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(char status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 
-    public char getPreVenda() {
+    public String getPreVenda() {
         return preVenda;
     }
 
-    public void setPreVenda(char preVenda) {
+    public void setPreVenda(String preVenda) {
         this.preVenda = preVenda;
     }
 

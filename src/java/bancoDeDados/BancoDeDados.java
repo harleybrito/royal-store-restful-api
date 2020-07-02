@@ -1,6 +1,7 @@
 package bancoDeDados;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.HashMap;
@@ -110,6 +111,49 @@ public class BancoDeDados {
         return produtos;
     }
     
+    public static Map<Long, VendaItens> getVendaItens(){
+        
+        Map<Long, VendaItens> vendaItens = new HashMap<>();
+        
+        try{
+            Connection databaseConnection = ConnectionDB.Connect();
+            PreparedStatement statement = databaseConnection.prepareStatement("select * from venda_itens");
+            ResultSet data = statement.executeQuery();
+
+            while(data.next()){
+                VendaItens vendaItem = new VendaItens(data.getLong(1), data.getLong(2), data.getLong(3), data.getInt(4));
+                vendaItens.put(vendaItem.getId(), vendaItem);
+            }
+            databaseConnection.close();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        
+        return vendaItens;
+    }
+    
+    public static Map<Long, VendaCapa> getVendaCapa(){
+        
+        Map<Long, VendaCapa> vendaCapas = new HashMap<>();
+        
+        try{
+            Connection databaseConnection = ConnectionDB.Connect();
+            PreparedStatement statement = databaseConnection.prepareStatement("select * from venda_capa");
+            ResultSet data = statement.executeQuery();
+
+            while(data.next()){
+                VendaCapa vendaCapa = new VendaCapa (data.getLong(1), data.getDate(2), data.getLong(3), data.getLong(4), data.getFloat(5), data.getString(6), data.getString(7),
+                                                     data.getString(8), data.getLong(9));
+                vendaCapas.put(vendaCapa.getId(), vendaCapa);
+            }
+            databaseConnection.close();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        
+        return vendaCapas;
+    }
+    
     public static void saveCliente(Cliente cliente){
         try{
             Connection databaseConnection = ConnectionDB.Connect();
@@ -194,6 +238,41 @@ public class BancoDeDados {
             statement.setString(7, produto.getObservacao());
             statement.setLong(8, produto.getIdFornecedor());
             statement.setLong(9, produto.getIdFormaDePagamento());
+            statement.executeUpdate();
+            databaseConnection.close();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+    
+    public static void saveVendaItem(VendaItens vendaItem){
+        try{
+            Connection databaseConnection = ConnectionDB.Connect();
+            PreparedStatement statement = databaseConnection.prepareStatement   ("insert into venda_itens "
+                                                                                + "(idVenda_Capa, idProduto, quantidade) values (?, ?, ?)");
+            statement.setLong(1, vendaItem.getIdVendaCapa());
+            statement.setLong(2, vendaItem.getIdProduto());
+            statement.setInt(3, vendaItem.getQuantidade());
+            statement.executeUpdate();
+            databaseConnection.close();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+    
+    public static void saveVendaCapa(VendaCapa vendaCapa){
+        try{
+            Connection databaseConnection = ConnectionDB.Connect();
+            PreparedStatement statement = databaseConnection.prepareStatement   ("insert into venda_capa "
+                                                                                + "(data, idForma_Pagamento, idCliente, valor_total, status, pre_venda, comanda, idFuncionario) values (?, ?, ?, ?, ?, ?, ?, ?)");
+            statement.setDate(1, (Date)vendaCapa.getData());
+            statement.setLong(2, vendaCapa.getIdFormaDePagamento());
+            statement.setLong(3, vendaCapa.getIdCliente());
+            statement.setFloat(4, vendaCapa.getValorTotal());
+            statement.setString(5, vendaCapa.getStatus());
+            statement.setString(6, vendaCapa.getPreVenda());
+            statement.setString(7, vendaCapa.getComanda());
+            statement.setLong(8, vendaCapa.getIdFuncionario());
             statement.executeUpdate();
             databaseConnection.close();
         }catch(Exception e){
@@ -297,6 +376,41 @@ public class BancoDeDados {
         }
     }
     
+    public static void updateVendaItem(VendaItens vendaItem){
+        try{
+            Connection databaseConnection = ConnectionDB.Connect();
+            PreparedStatement statement = databaseConnection.prepareStatement   ("UPDATE venda_itens SET "
+                                                                                + "idVenda_Capa = ?, idProduto = ?, quantidade = ? where idVenda_Itens = ?");
+            statement.setLong(1, vendaItem.getIdVendaCapa());
+            statement.setLong(2, vendaItem.getIdProduto());
+            statement.setInt(3, vendaItem.getQuantidade());
+            statement.executeUpdate();
+            databaseConnection.close();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+    
+    public static void updateVendaCapa(VendaCapa vendaCapa){
+        try{
+            Connection databaseConnection = ConnectionDB.Connect();
+            PreparedStatement statement = databaseConnection.prepareStatement   ("update venda_capa set"
+                                                                                + "data = ?, idForma_Pagamento = ?, idCliente = ?, valor_total = ?, status = ?, pre_venda = ?, comanda = ?, idFuncionario = ?");
+            statement.setDate(1, (Date)vendaCapa.getData());
+            statement.setLong(2, vendaCapa.getIdFormaDePagamento());
+            statement.setLong(3, vendaCapa.getIdCliente());
+            statement.setFloat(4, vendaCapa.getValorTotal());
+            statement.setString(5, vendaCapa.getStatus());
+            statement.setString(6, vendaCapa.getPreVenda());
+            statement.setString(7, vendaCapa.getComanda());
+            statement.setLong(8, vendaCapa.getIdFuncionario());
+            statement.executeUpdate();
+            databaseConnection.close();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+    
     public static void removeCliente(long id){
         try{
             Connection databaseConnection = ConnectionDB.Connect();
@@ -337,6 +451,30 @@ public class BancoDeDados {
         try{
             Connection databaseConnection = ConnectionDB.Connect();
             PreparedStatement statement = databaseConnection.prepareStatement("DELETE FROM produto WHERE idProduto = ?");
+            statement.setLong(1, id);
+            statement.executeUpdate();
+            databaseConnection.close();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+    
+    public static void removeVendaItem(long id){
+        try{
+            Connection databaseConnection = ConnectionDB.Connect();
+            PreparedStatement statement = databaseConnection.prepareStatement("DELETE FROM venda_itens WHERE idVenda_Itens = ?");
+            statement.setLong(1, id);
+            statement.executeUpdate();
+            databaseConnection.close();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+    
+    public static void removeVendaCapa(long id){
+        try{
+            Connection databaseConnection = ConnectionDB.Connect();
+            PreparedStatement statement = databaseConnection.prepareStatement("DELETE FROM venda_capa WHERE idVenda_Capa = ?");
             statement.setLong(1, id);
             statement.executeUpdate();
             databaseConnection.close();
